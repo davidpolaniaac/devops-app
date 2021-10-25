@@ -7,7 +7,12 @@ metadata:
   labels:
     app: "frontend"
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
   selector:
     matchLabels:
       app: "frontend"
@@ -21,6 +26,13 @@ spec:
         image: "#{containerimage-frontend}#"
         ports:
         - containerPort: 4200
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 4200
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
 ---
 apiVersion: "autoscaling/v2beta1"
 kind: "HorizontalPodAutoscaler"

@@ -84,12 +84,12 @@ stages:
         Dockerfile: backend/Dockerfile
         tags: '$(Build.BuildNumber)'
  
-#    - task: Anchore@0
-#      displayName: container security backend
-#      inputs:
-#        image: 'gcr.io/the-tree-beneath-329315/devops/backend:$(Build.BuildNumber)'
-#        dockerfile: 'backend/Dockerfile'
-#        failBuild: false
+    - task: Anchore@0
+      displayName: container security backend
+      inputs:
+        image: 'gcr.io/the-tree-beneath-329315/devops/backend:$(Build.BuildNumber)'
+        dockerfile: 'backend/Dockerfile'
+        failBuild: false
     #    customPolicyPath: '.anchore/policy.json'
     
     - task: Docker@2
@@ -140,12 +140,12 @@ stages:
         Dockerfile: frontend/Dockerfile
         tags: '$(Build.BuildNumber)'
 
-#    - task: Anchore@0
-#      displayName: container security frontend
-#      inputs:
-#        image: 'gcr.io/the-tree-beneath-329315/devops/frontend:$(Build.BuildNumber)'
-#        dockerfile: 'frontend/Dockerfile'
-#        failBuild: false
+    - task: Anchore@0
+      displayName: container security frontend
+      inputs:
+        image: 'gcr.io/the-tree-beneath-329315/devops/frontend:$(Build.BuildNumber)'
+        dockerfile: 'frontend/Dockerfile'
+        failBuild: false
     #    customPolicyPath: '.anchore/policy.json'
     
     - task: Docker@2
@@ -165,24 +165,30 @@ stages:
         configuration: devops/k8s/frontend.yaml
 
 
-#- stage: security_test_frontend_dev
-#   dependsOn:
-#   - frontendbuilddev
-#  displayName: 'SecurityTest Frontend DEV'
-#  jobs:
-#  - job: SecurityTest
-#    pool:
-#      name: devopslab
-#    steps:
-#    - task: owaspzap@1
-#      inputs:
-#        scantype: 'targetedScan'
-#        url: 'http://104.154.130.64'
-#        port: '4200'
-#        threshold: '120'
+
+
+- stage: securitytestfrontenddev
+   dependsOn:
+   - frontendbuilddev
+  displayName: 'SecurityTest Frontend DEV'
+  variables:
+    - group: devops-dev
+  jobs:
+  - job: securitytest
+    pool:
+      name: devopslab
+    steps:
+    - task: owaspzap@1
+      inputs:
+        scantype: 'targetedScan'
+        url: '$(targetscan)'
+        port: '80'
+        threshold: '120'
 
 
 - stage: namespacepdn
+   dependsOn:
+   - securitytestfrontenddev
   condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
   displayName: 'Namespace PDN'
   variables:
@@ -249,13 +255,6 @@ stages:
         Dockerfile: backend/Dockerfile
         tags: '$(Build.BuildNumber)'
  
-#    - task: Anchore@0
-#      displayName: container security backend
-#      inputs:
-#        image: 'gcr.io/the-tree-beneath-329315/devops/backend:$(Build.BuildNumber)'
-#        dockerfile: 'backend/Dockerfile'
-#        failBuild: false
-    #    customPolicyPath: '.anchore/policy.json'
     
     - task: Docker@2
       displayName: push backend image
@@ -273,6 +272,22 @@ stages:
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/back.yaml
+
+- stage: rollbackbackendpdn
+  displayName: 'Rollback Backend'
+  dependsOn:
+  - backendbuildpdn
+  condition: failed()
+  jobs:
+  - job: rollbackbackendpdn
+    pool:
+      name: devopslab
+    steps:
+    - task: kubectlgeneral@3
+      inputs:
+        k8sService: 'k8s'
+        subCommand: 'rollout'
+        arguments: 'undo deployment backend -n devops-pdn'
 
 
 - stage: frontendbuildpdn
@@ -308,14 +323,6 @@ stages:
         command: build
         Dockerfile: frontend/Dockerfile
         tags: '$(Build.BuildNumber)'
-
-#    - task: Anchore@0
-#      displayName: container security frontend
-#      inputs:
-#        image: 'gcr.io/the-tree-beneath-329315/devops/frontend:$(Build.BuildNumber)'
-#        dockerfile: 'frontend/Dockerfile'
-#        failBuild: false
-    #    customPolicyPath: '.anchore/policy.json'
     
     - task: Docker@2
       displayName: push frontend
@@ -332,3 +339,20 @@ stages:
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/frontend.yaml
+
+
+- stage: rollbackfrontendpdn
+  displayName: 'Rollback Frontend'
+  dependsOn:
+  - frontendbuildpdn
+  condition: failed()
+  jobs:
+  - job: rollbackfrontendpdn
+    pool:
+      name: devopslab
+    steps:
+    - task: kubectlgeneral@3
+      inputs:
+        k8sService: 'k8s'
+        subCommand: 'rollout'
+        arguments: 'undo deployment frontend -n devops-pdn'
