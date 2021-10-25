@@ -103,7 +103,7 @@ stages:
       displayName: 'k8s deploy backend'
       inputs:
         kubernetesServiceEndpoint: k8s
-        command: apply
+        command: create
         useConfigurationFile: true
         configuration: devops/k8s/backend.yaml
 
