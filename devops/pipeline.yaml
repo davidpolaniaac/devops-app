@@ -19,9 +19,40 @@ trigger:
 
 pool:
   name: devopslab
-  
+
 stages:
+- stage: namespacedev
+  displayName: 'Namespace DEV'
+  variables:
+    - group: devops-dev
+  jobs:
+  - job: BuildDeploy
+    variables:
+      - group: devops-dev
+    pool:
+      name: devopslab
+
+    steps:
+    - task: qetza.replacetokens.replacetokens-task.replacetokens@4
+      displayName: 'Replace variables ns'
+      inputs:
+        rootDirectory: $(Build.SourcesDirectory)
+        targetFiles: |
+         devops/k8s/namespace.yaml
+        tokenPattern: custom
+
+    - task: Kubernetes@1
+      displayName: 'k8s deploy namespace'
+      inputs:
+        kubernetesServiceEndpoint: k8s
+        command: apply
+        useConfigurationFile: true
+        configuration: devops/k8s/namespace.yaml
+
+
 - stage: backendbuilddev
+  dependsOn:
+  - namespacedev
   displayName: 'Backend DEV'
   variables:
     - group: devops-dev
@@ -150,12 +181,41 @@ stages:
 #        threshold: '120'
 
 
+- stage: namespacepdn
+  displayName: 'Namespace PDN'
+  variables:
+    - group: devops-pdn
+  jobs:
+  - job: BuildDeploy
+    variables:
+      - group: devops-pdn
+    pool:
+      name: devopslab
+
+    steps:
+    - task: qetza.replacetokens.replacetokens-task.replacetokens@4
+      displayName: 'Replace variables ns'
+      inputs:
+        rootDirectory: $(Build.SourcesDirectory)
+        targetFiles: |
+         devops/k8s/namespace.yaml
+        tokenPattern: custom
+
+    - task: Kubernetes@1
+      displayName: 'k8s deploy namespace'
+      inputs:
+        kubernetesServiceEndpoint: k8s
+        command: apply
+        useConfigurationFile: true
+        configuration: devops/k8s/namespace.yaml
+
 
 
 - stage: backendbuildpdn
   displayName: 'Backend PDN'
   dependsOn:
   - backendbuilddev
+  - namespacepdn
   variables:
     - group: devops-pdn
   jobs:
@@ -217,6 +277,7 @@ stages:
   displayName: 'Frontend PDN'
   dependsOn:
   - frontendbuilddev
+  - namespacepdn
   variables:
     - group: devops-pdn
   jobs:
