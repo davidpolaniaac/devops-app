@@ -13,8 +13,8 @@ trigger:
    include:
     - /*
 
-variables:
-  - group: devopslab
+#variables:
+#  - group: devopslab
 
 
 pool:
@@ -23,6 +23,8 @@ pool:
 stages:
 - stage: backendbuilddev
   displayName: 'Backend DEV'
+  variables:
+    - group: devops-dev
   jobs:
   - job: BuildDeploy
     pool:
@@ -32,17 +34,17 @@ stages:
     - task: qetza.replacetokens.replacetokens-task.replacetokens@4
       displayName: 'Replace variables back'
       inputs:
-        rootDirectory: backend
+        rootDirectory: $(Build.SourcesDirectory)
         targetFiles: |
-         deployment.yaml
-         app.js
+         devops/k8s/frontend.yaml
+         backend/app.js
         tokenPattern: custom
 
     - task: Docker@2
       displayName: build backend image
       inputs:
         containerRegistry: 'gcp-registry'
-        repository: 'the-tree-beneath-329315/devops/backend'
+        repository: 'the-tree-beneath-329315/devops/dev/backend'
         command: build
         Dockerfile: backend/Dockerfile
         tags: '$(Build.BuildNumber)'
@@ -59,7 +61,7 @@ stages:
       displayName: push backend image
       inputs:
         containerRegistry: 'gcp-registry'
-        repository: 'the-tree-beneath-329315/devops/backend'
+        repository: 'the-tree-beneath-329315/devops/dev/backend'
         tags: '$(Build.BuildNumber)'
         command: push
 
@@ -70,11 +72,13 @@ stages:
         kubernetesServiceEndpoint: k8s
         command: apply
         useConfigurationFile: true
-        configuration: backend/deployment.yaml
+        configuration: devops/k8s/backend.yaml
 
 
 - stage: frontendbuilddev
   displayName: 'Frontend DEV'
+  variables:
+    - group: devops-dev
   jobs:
   - job: BuildDeploy
     pool:
@@ -83,10 +87,10 @@ stages:
     - task: qetza.replacetokens.replacetokens-task.replacetokens@4
       displayName: 'Replace variables front'
       inputs:
-        rootDirectory: frontend
+        rootDirectory: $(Build.SourcesDirectory)
         targetFiles: |
-         src/app/user.service.ts
-         deployment.yaml
+         frontend/src/app/user.service.ts
+         devops/k8s/frontend.yaml
         tokenPattern: custom
 
 
@@ -94,7 +98,7 @@ stages:
       displayName: build frontend
       inputs:
         containerRegistry: 'gcp-registry'
-        repository: 'the-tree-beneath-329315/devops/frontend'
+        repository: 'the-tree-beneath-329315/devops/dev/frontend'
         command: build
         Dockerfile: frontend/Dockerfile
         tags: '$(Build.BuildNumber)'
@@ -111,7 +115,7 @@ stages:
       displayName: push frontend
       inputs:
         containerRegistry: 'gcp-registry'
-        repository: 'the-tree-beneath-329315/devops/frontend'
+        repository: 'the-tree-beneath-329315/devops/dev/frontend'
         tags: '$(Build.BuildNumber)'
         command: push
 
@@ -121,7 +125,7 @@ stages:
         kubernetesServiceEndpoint: k8s
         command: apply
         useConfigurationFile: true
-        configuration: frontend/deployment.yaml
+        configuration: devops/k8s/frontend.yaml
 
 
 #- stage: security_test_frontend_dev
