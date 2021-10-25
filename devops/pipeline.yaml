@@ -277,7 +277,9 @@ stages:
   displayName: 'Rollback Backend'
   dependsOn:
   - backendbuildpdn
-  condition: failed()
+  condition:
+  - failed()
+  - and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
   jobs:
   - job: rollbackbackendpdn
     pool:
@@ -345,7 +347,9 @@ stages:
   displayName: 'Rollback Frontend'
   dependsOn:
   - frontendbuildpdn
-  condition: failed()
+  condition: 
+  - failed()
+  - and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
   jobs:
   - job: rollbackfrontendpdn
     pool:
