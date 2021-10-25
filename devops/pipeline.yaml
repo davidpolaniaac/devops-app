@@ -99,7 +99,6 @@ stages:
         tags: '$(Build.BuildNumber)'
         command: push
 
-
     - task: Kubernetes@1
       displayName: 'k8s deploy backend'
       inputs:
@@ -107,7 +106,6 @@ stages:
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/backend.yaml
-
 
 - stage: frontendbuilddev
   displayName: 'Frontend DEV'
@@ -269,8 +267,6 @@ stages:
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/backend.yaml
-
-
 
 
 - stage: frontendbuildpdn
