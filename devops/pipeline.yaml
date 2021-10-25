@@ -27,14 +27,14 @@ stages:
     - group: devops-dev
   jobs:
   - job: BuildDeploy
+    variables:
+      - group: devops-dev
     pool:
       name: devopslab
 
     steps:
     - task: qetza.replacetokens.replacetokens-task.replacetokens@4
       displayName: 'Replace variables back'
-      variables:
-        - group: devops-dev
       inputs:
         rootDirectory: $(Build.SourcesDirectory)
         targetFiles: |
@@ -84,13 +84,13 @@ stages:
     - group: devops-dev
   jobs:
   - job: BuildDeploy
+    variables:
+      - group: devops-dev
     pool:
       name: devopslab
     steps:
     - task: qetza.replacetokens.replacetokens-task.replacetokens@4
       displayName: 'Replace variables front'
-      variables:
-        - group: devops-dev
       inputs:
         rootDirectory: $(Build.SourcesDirectory)
         targetFiles: |
@@ -160,14 +160,14 @@ stages:
     - group: devops-pdn
   jobs:
   - job: BuildDeploy
+    variables:
+      - group: devops-pdn
     pool:
       name: devopslab
 
     steps:
     - task: qetza.replacetokens.replacetokens-task.replacetokens@4
       displayName: 'Replace variables back'
-      variables:
-        - group: devops-pdn
       inputs:
         rootDirectory: $(Build.SourcesDirectory)
         targetFiles: |
@@ -221,13 +221,13 @@ stages:
     - group: devops-pdn
   jobs:
   - job: BuildDeploy
+    variables:
+      - group: devops-pdn
     pool:
       name: devopslab
     steps:
     - task: qetza.replacetokens.replacetokens-task.replacetokens@4
       displayName: 'Replace variables front'
-      variables:
-        - group: devops-pdn
       inputs:
         rootDirectory: $(Build.SourcesDirectory)
         targetFiles: |
