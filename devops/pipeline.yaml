@@ -110,6 +110,8 @@ stages:
 
 - stage: frontendbuilddev
   displayName: 'Frontend DEV'
+  dependsOn:
+  - namespacedev
   variables:
     - group: devops-dev
   jobs:
