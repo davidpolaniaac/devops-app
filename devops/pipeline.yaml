@@ -36,7 +36,7 @@ stages:
       inputs:
         rootDirectory: $(Build.SourcesDirectory)
         targetFiles: |
-         devops/k8s/frontend.yaml
+         devops/k8s/backend.yaml
          backend/app.js
         tokenPattern: custom
 
