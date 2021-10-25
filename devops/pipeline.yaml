@@ -24,7 +24,7 @@ stages:
 - stage: backendbuilddev
   displayName: 'Backend DEV'
   jobs:
-  - job: Build-Deploy
+  - job: BuildDeploy
     pool:
       name: devopslab
     steps:
@@ -76,7 +76,7 @@ stages:
 - stage: frontendbuilddev
   displayName: 'Frontend DEV'
   jobs:
-  - job: Build-Deploy
+  - job: BuildDeploy
     pool:
       name: devopslab
     steps:
