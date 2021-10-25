@@ -21,6 +21,7 @@ spec:
         image: "#{containerimage-backend}#"
         ports:
         - containerPort: 3000
+
 ---
 apiVersion: "autoscaling/v2beta1"
 kind: "HorizontalPodAutoscaler"
