@@ -6,7 +6,7 @@ import swal from 'sweetalert2';
 	providedIn: 'root'
 })
 export class UserService {
-	url = 'http://localhost:3000/user';
+	url = '#{backendpath}#';
 
 	constructor(private http: HttpClient) { }
 

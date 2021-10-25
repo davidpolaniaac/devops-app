@@ -1,0 +1,139 @@
+name: $(Build.SourceBranchName).$(date:yyyyMMdd)$(rev:.r)
+
+resources:
+- repo: self
+  clean: all
+  fetchDepth: 1
+
+trigger:
+  branches:
+   include:
+    - main/*
+  paths:
+   include:
+    - /*
+
+variables:
+  - group: devopslab
+
+
+pool:
+  name: devopslab
+  
+stages:
+- stage: build_deploy_backend_dev
+  displayName: 'Backend DEV'
+  jobs:
+  - job: Build-Deploy
+    pool:
+      name: devopslab
+    steps:
+
+    - task: qetza.replacetokens.replacetokens-task.replacetokens@4
+      displayName: 'Replace variables back'
+      inputs:
+        rootDirectory: backend
+        targetFiles: |
+         deployment.yaml
+         app.js
+        tokenPattern: custom
+
+    - task: Docker@2
+      displayName: build backend image
+      inputs:
+        containerRegistry: 'gcp-registry'
+        repository: 'the-tree-beneath-329315/devops/backend'
+        command: build
+        Dockerfile: backend/Dockerfile
+        tags: '$(Build.BuildNumber)'
+ 
+#    - task: Anchore@0
+#      displayName: container security backend
+#      inputs:
+#        image: 'gcr.io/the-tree-beneath-329315/devops/backend:$(Build.BuildNumber)'
+#        dockerfile: 'backend/Dockerfile'
+#        failBuild: false
+    #    customPolicyPath: '.anchore/policy.json'
+    
+    - task: Docker@2
+      displayName: push backend image
+      inputs:
+        containerRegistry: 'gcp-registry'
+        repository: 'the-tree-beneath-329315/devops/backend'
+        tags: '$(Build.BuildNumber)'
+        command: push
+
+
+    - task: Kubernetes@1
+      displayName: 'k8s deploy backend'
+      inputs:
+        kubernetesServiceEndpoint: k8s
+        command: apply
+        useConfigurationFile: true
+        configuration: backend/deployment.yaml
+
+
+- stage: build_deploy_frontend_dev
+  displayName: 'Frontend DEV'
+  jobs:
+  - job: Build-Deploy
+    pool:
+      name: devopslab
+    steps:
+    - task: qetza.replacetokens.replacetokens-task.replacetokens@4
+      displayName: 'Replace variables front'
+      inputs:
+        rootDirectory: frontend
+        targetFiles: |
+         src/app/user.service.ts
+         deployment.yaml
+        tokenPattern: custom
+
+
+    - task: Docker@2
+      displayName: build frontend
+      inputs:
+        containerRegistry: 'gcp-registry'
+        repository: 'the-tree-beneath-329315/devops/frontend'
+        command: build
+        Dockerfile: frontend/Dockerfile
+        tags: '$(Build.BuildNumber)'
+
+#    - task: Anchore@0
+#      displayName: container security frontend
+#      inputs:
+#        image: 'gcr.io/the-tree-beneath-329315/devops/frontend:$(Build.BuildNumber)'
+#        dockerfile: 'frontend/Dockerfile'
+#        failBuild: false
+    #    customPolicyPath: '.anchore/policy.json'
+    
+    - task: Docker@2
+      displayName: push frontend
+      inputs:
+        containerRegistry: 'gcp-registry'
+        repository: 'the-tree-beneath-329315/devops/frontend'
+        tags: '$(Build.BuildNumber)'
+        command: push
+
+    - task: Kubernetes@1
+      displayName: 'k8s deploy frontend'
+      inputs:
+        kubernetesServiceEndpoint: k8s
+        command: apply
+        useConfigurationFile: true
+        configuration: frontend/deployment.yaml
+
+
+#- stage: security_test_frontend_dev
+#  displayName: 'SecurityTest Frontend DEV'
+#  jobs:
+#  - job: SecurityTest
+#    pool:
+#      name: devopslab
+#    steps:
+#    - task: owaspzap@1
+#      inputs:
+#        scantype: 'targetedScan'
+#        url: 'http://104.154.130.64'
+#        port: '4200'
+#        threshold: '120'
