@@ -6,6 +6,10 @@ This code will add, upadate and delete data to mongodb using express rest APIS a
 
 ![architecture](/images/architecture.png "Architecture")
 
+### Diagram
+
+![diagram](/images/diagram.png "Diagram")
+
 ### Prerequisites
 
 ```
