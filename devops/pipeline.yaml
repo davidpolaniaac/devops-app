@@ -183,6 +183,7 @@ stages:
 
 
 - stage: namespacepdn
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
   displayName: 'Namespace PDN'
   variables:
     - group: devops-pdn
@@ -213,6 +214,7 @@ stages:
 
 
 - stage: backendbuildpdn
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
   displayName: 'Backend PDN'
   dependsOn:
   - backendbuilddev
@@ -274,6 +276,7 @@ stages:
 
 
 - stage: frontendbuildpdn
+  condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
   displayName: 'Frontend PDN'
   dependsOn:
   - frontendbuilddev
