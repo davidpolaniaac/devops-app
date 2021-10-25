@@ -13,8 +13,8 @@ trigger:
    include:
     - /*
 
-#variables:
-#  - group: devopslab
+variables:
+  - group: devopslab
 
 
 pool:
@@ -34,7 +34,7 @@ stages:
     - task: qetza.replacetokens.replacetokens-task.replacetokens@4
       displayName: 'Replace variables back'
       inputs:
-        rootDirectory: $(Build.SourcesDirectory)
+        rootDirectory:
         targetFiles: |
          devops/k8s/backend.yaml
          backend/app.js
