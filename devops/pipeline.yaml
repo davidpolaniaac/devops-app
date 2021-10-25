@@ -13,8 +13,8 @@ trigger:
    include:
     - /*
 
-variables:
-  - group: devops-dev
+#variables:
+#  - group: devops-dev
 
 
 pool:
