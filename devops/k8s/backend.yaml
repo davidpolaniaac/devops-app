@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: devops-dev
+  name: #{namespace}#
 ---
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
   name: "backend"
-  namespace: "devops-dev"
+  namespace: "#{namespace}#"
   labels:
     app: "backend"
 spec:
@@ -32,7 +32,7 @@ apiVersion: "autoscaling/v2beta1"
 kind: "HorizontalPodAutoscaler"
 metadata:
   name: "backend-hpa-fdxb"
-  namespace: "devops-dev"
+  namespace: "#{namespace}#"
   labels:
     app: "backend"
 spec:
@@ -66,7 +66,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend
-  namespace: "devops-dev"
+  namespace: "#{namespace}#"
   labels:
     name: backend
 spec:
