@@ -22,9 +22,9 @@ pool:
   
 stages:
 - stage: build_deploy_backend_dev
-  displayName: 'Build-Deploy Backend DEV'
+  displayName: 'Backend DEV'
   jobs:
-  - job: Deploy
+  - job: Build-Deploy
     pool:
       name: devopslab
     steps:
@@ -74,9 +74,9 @@ stages:
 
 
 - stage: build_deploy_frontend_dev
-  displayName: 'Build-Deploy Frontend DEV'
+  displayName: 'Frontend DEV'
   jobs:
-  - job: Deploy
+  - job: Build-Deploy
     pool:
       name: devopslab
     steps:
