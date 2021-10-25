@@ -125,6 +125,8 @@ stages:
 
 
 #- stage: security_test_frontend_dev
+#   dependsOn:
+#   - build_deploy_frontend_dev
 #  displayName: 'SecurityTest Frontend DEV'
 #  jobs:
 #  - job: SecurityTest
