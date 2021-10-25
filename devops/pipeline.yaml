@@ -233,6 +233,7 @@ stages:
         rootDirectory: $(Build.SourcesDirectory)
         targetFiles: |
          backend/app.js
+         devops/k8s/back.yaml
          devops/k8s/backend.yaml
         tokenPattern: custom
 
@@ -269,7 +270,7 @@ stages:
         kubernetesServiceEndpoint: k8s
         command: apply
         useConfigurationFile: true
-        configuration: devops/k8s/backend.yaml
+        configuration: devops/k8s/back.yaml
 
 
 - stage: frontendbuildpdn
