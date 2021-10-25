@@ -21,7 +21,7 @@ pool:
   name: devopslab
   
 stages:
-- stage: backend-dev
+- stage: backendbuilddev
   displayName: 'Backend DEV'
   jobs:
   - job: Build-Deploy
@@ -73,7 +73,7 @@ stages:
         configuration: backend/deployment.yaml
 
 
-- stage: frontend-dev
+- stage: frontendbuilddev
   displayName: 'Frontend DEV'
   jobs:
   - job: Build-Deploy
@@ -126,7 +126,7 @@ stages:
 
 #- stage: security_test_frontend_dev
 #   dependsOn:
-#   - frontend-dev
+#   - frontendbuilddev
 #  displayName: 'SecurityTest Frontend DEV'
 #  jobs:
 #  - job: SecurityTest
