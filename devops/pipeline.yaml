@@ -168,8 +168,8 @@ stages:
 
 
 - stage: securitytestfrontenddev
-   dependsOn:
-   - frontendbuilddev
+  dependsOn:
+  - frontendbuilddev
   displayName: 'SecurityTest Frontend DEV'
   variables:
     - group: devops-dev
@@ -187,8 +187,8 @@ stages:
 
 
 - stage: namespacepdn
-   dependsOn:
-   - securitytestfrontenddev
+  dependsOn:
+  - securitytestfrontenddev
   condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
   displayName: 'Namespace PDN'
   variables:
@@ -254,7 +254,7 @@ stages:
         command: build
         Dockerfile: backend/Dockerfile
         tags: '$(Build.BuildNumber)'
- 
+
     
     - task: Docker@2
       displayName: push backend image
