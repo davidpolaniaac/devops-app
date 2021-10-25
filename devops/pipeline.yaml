@@ -71,6 +71,7 @@ stages:
         targetFiles: |
          backend/app.js
          devops/k8s/backend.yaml
+         devops/k8s/back.yaml
         tokenPattern: custom
 
 
@@ -105,7 +106,7 @@ stages:
         kubernetesServiceEndpoint: k8s
         command: apply
         useConfigurationFile: true
-        configuration: devops/k8s/backend.yaml
+        configuration: devops/k8s/back.yaml
 
 - stage: frontendbuilddev
   displayName: 'Frontend DEV'
