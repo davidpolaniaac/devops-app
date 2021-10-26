@@ -352,7 +352,7 @@ stages:
     - task: Kubernetes@1
       displayName: 'k8s deploy ingress dev'
       inputs:
-        kubernetesServiceEndpoint: k8s
+        kubernetesServiceEndpoint: k8s-pdn
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/ingress-pdn.yaml
