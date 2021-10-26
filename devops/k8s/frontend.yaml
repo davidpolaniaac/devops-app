@@ -7,12 +7,12 @@ metadata:
   labels:
     app: "frontend"
 spec:
-  replicas: 1
-#  strategy:
-#      type: RollingUpdate
-#      rollingUpdate:
-#        maxSurge: 1
-#        maxUnavailable: 0
+  replicas: 2
+  strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 1
+        maxUnavailable: 0
   selector:
     matchLabels:
       app: "frontend"
@@ -26,13 +26,13 @@ spec:
         image: "#{containerimage-frontend}#"
         ports:
         - containerPort: 4200
-#        readinessProbe:
-#          httpGet:
-#            path: /
-#            port: 4200
-#          initialDelaySeconds: 5
-#          periodSeconds: 5
-#          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 4200
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
 ---
 apiVersion: "autoscaling/v2beta1"
 kind: "HorizontalPodAutoscaler"
@@ -46,8 +46,8 @@ spec:
     kind: "Deployment"
     name: "frontend"
     apiVersion: "apps/v1"
-  minReplicas: 1
-  maxReplicas: 3
+  minReplicas: 2
+  maxReplicas: 4
   metrics:
   - type: "Resource"
     resource:
@@ -90,28 +90,28 @@ spec:
 #     app: frontend
 
 
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  finalizers:
-  - networking.gke.io/ingress-finalizer-V2
-  generation: 1
-  managedFields:
-  - apiVersion: extensions/v1beta1
-    fieldsType: FieldsV1
-    manager: GoogleCloudConsole
-    operation: Update
-  - apiVersion: networking.k8s.io/v1beta1
-    fieldsType: FieldsV1
-    manager: glbc
-    operation: Update
-  name: frontenddev
-  namespace: devops-dev
-spec:
-  backend:
-    serviceName: frontend
-    servicePort: 4200
-status:
-  loadBalancer:
-    ingress:
-    - ip: #{ingressip}#
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   finalizers:
+#   - networking.gke.io/ingress-finalizer-V2
+#   generation: 1
+#   managedFields:
+#   - apiVersion: extensions/v1beta1
+#     fieldsType: FieldsV1
+#     manager: GoogleCloudConsole
+#     operation: Update
+#   - apiVersion: networking.k8s.io/v1beta1
+#     fieldsType: FieldsV1
+#     manager: glbc
+#     operation: Update
+#   name: frontenddev
+#   namespace: devops-dev
+# spec:
+#   backend:
+#     serviceName: frontend
+#     servicePort: 4200
+# status:
+#   loadBalancer:
+#     ingress:
+#     - ip: #{ingressip}#
