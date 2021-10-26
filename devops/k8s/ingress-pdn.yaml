@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.gcp.kubernetes.io/pre-shared-cert: mcrt-a0222206-3af2-450d-bccb-00c1c8b35015
+    networking.gke.io/managed-certificates: devopslab
+  finalizers:
+  - networking.gke.io/ingress-finalizer-V2
+  generation: 1
+  managedFields:
+  - apiVersion: extensions/v1beta1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:networking.gke.io/managed-certificates: {}
+      f:spec:
+        f:backend:
+          .: {}
+          f:serviceName: {}
+          f:servicePort: {}
+    manager: GoogleCloudConsole
+    operation: Update
+  - apiVersion: networking.k8s.io/v1beta1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:finalizers:
+          .: {}
+          v:"networking.gke.io/ingress-finalizer-V2": {}
+    manager: glbc
+    operation: Update
+  - apiVersion: networking.k8s.io/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:ingress.gcp.kubernetes.io/pre-shared-cert: {}
+    manager: managed-certificate-controller
+    operation: Update
+  name: frontendpdn
+  namespace: devops-pdn
+  resourceVersion: "3107799"
+  uid: 4ae5f6fa-00bd-4019-ae79-b394c9b122b9
+spec:
+  backend:
+    serviceName: frontend
+    servicePort: 4200
+status:
+  loadBalancer:
+    ingress:
+    - ip: #{ingressip}#
