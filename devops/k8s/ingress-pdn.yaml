@@ -10,34 +10,12 @@ metadata:
   generation: 1
   managedFields:
   - apiVersion: extensions/v1beta1
-    fieldsType: FieldsV1
-    fieldsV1:
-      f:metadata:
-        f:annotations:
-          .: {}
-          f:networking.gke.io/managed-certificates: {}
-      f:spec:
-        f:backend:
-          .: {}
-          f:serviceName: {}
-          f:servicePort: {}
     manager: GoogleCloudConsole
     operation: Update
   - apiVersion: networking.k8s.io/v1beta1
-    fieldsType: FieldsV1
-    fieldsV1:
-      f:metadata:
-        f:finalizers:
-          .: {}
-          v:"networking.gke.io/ingress-finalizer-V2": {}
     manager: glbc
     operation: Update
   - apiVersion: networking.k8s.io/v1
-    fieldsType: FieldsV1
-    fieldsV1:
-      f:metadata:
-        f:annotations:
-          f:ingress.gcp.kubernetes.io/pre-shared-cert: {}
     manager: managed-certificate-controller
     operation: Update
   name: frontendpdn
