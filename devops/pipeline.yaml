@@ -280,21 +280,21 @@ stages:
         useConfigurationFile: true
         configuration: devops/k8s/back.yaml
 
-- stage: rollbackbackendpdn
-  displayName: 'Rollback Backend'
-  dependsOn: backendbuildpdn
-  condition: failed()
-  jobs:
-  - job: rollbackbackendpdn
-    pool:
-      name: devopslab
-    steps:
-    - task: tsuyoshiushio.k8s-endpoint.general-task.kubectlgeneral@3
-      displayName: 'rollout'
-      inputs:
-        k8sService: 'k8s'
-        subCommand: rollout
-        arguments: 'undo deployment backend -n devops-pdn'
+# - stage: rollbackbackendpdn
+#   displayName: 'Rollback Backend'
+#   dependsOn: backendbuildpdn
+#   condition: failed()
+#   jobs:
+#   - job: rollbackbackendpdn
+#     pool:
+#       name: devopslab
+#     steps:
+#     - task: tsuyoshiushio.k8s-endpoint.general-task.kubectlgeneral@3
+#       displayName: 'rollout'
+#       inputs:
+#         k8sService: 'k8s'
+#         subCommand: rollout
+#         arguments: 'undo deployment backend -n devops-pdn'
 
 
 - stage: frontendbuildpdn
@@ -357,18 +357,18 @@ stages:
         useConfigurationFile: true
         configuration: devops/k8s/ingress-pdn.yaml
 
-- stage: rollbackfrontendpdn
-  displayName: 'Rollback Frontend'
-  dependsOn: frontendbuildpdn
-  condition: failed()
-  jobs:
-  - job: rollbackfrontendpdn
-    pool:
-      name: devopslab
-    steps:
-    - task: tsuyoshiushio.k8s-endpoint.general-task.kubectlgeneral@3
-      displayName: 'rollout'
-      inputs:
-        k8sService: 'k8s'
-        subCommand: rollout
-        arguments: 'undo deployment frontend -n devops-pdn'
+# - stage: rollbackfrontendpdn
+#   displayName: 'Rollback Frontend'
+#   dependsOn: frontendbuildpdn
+#   condition: failed()
+#   jobs:
+#   - job: rollbackfrontendpdn
+#     pool:
+#       name: devopslab
+#     steps:
+#     - task: tsuyoshiushio.k8s-endpoint.general-task.kubectlgeneral@3
+#       displayName: 'rollout'
+#       inputs:
+#         k8sService: 'k8s'
+#         subCommand: rollout
+#         arguments: 'undo deployment frontend -n devops-pdn'
