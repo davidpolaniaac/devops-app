@@ -2,8 +2,9 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-    ingress.gcp.kubernetes.io/pre-shared-cert: mcrt-a0222206-3af2-450d-bccb-00c1c8b35015
-    networking.gke.io/managed-certificates: devopslab
+    ingress.gcp.kubernetes.io/pre-shared-cert: mcrt-0d566a4d-8ad7-4f77-af0c-b06effa4f51f
+    networking.gke.io/managed-certificates: devopslabtk
+    ingress.kubernetes.io/ssl-cert: mcrt-0d566a4d-8ad7-4f77-af0c-b06effa4f51f
   finalizers:
   - networking.gke.io/ingress-finalizer-V2
   generation: 1
