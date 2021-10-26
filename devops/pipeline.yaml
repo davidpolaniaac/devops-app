@@ -290,10 +290,11 @@ stages:
     pool:
       name: devopslab
     steps:
-    - task: kubectlgeneral@3
+    - task: tsuyoshiushio.k8s-endpoint.general-task.kubectlgeneral@3
+      displayName: 'rollout'
       inputs:
         k8sService: 'k8s'
-        subCommand: 'rollout'
+        subCommand: rollout
         arguments: 'undo deployment backend -n devops-pdn'
 
 
@@ -367,8 +368,9 @@ stages:
     pool:
       name: devopslab
     steps:
-    - task: kubectlgeneral@3
+    - task: tsuyoshiushio.k8s-endpoint.general-task.kubectlgeneral@3
+      displayName: 'rollout'
       inputs:
         k8sService: 'k8s'
-        subCommand: 'rollout'
+        subCommand: rollout
         arguments: 'undo deployment frontend -n devops-pdn'
