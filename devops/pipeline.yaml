@@ -44,7 +44,7 @@ stages:
     - task: Kubernetes@1
       displayName: 'k8s deploy namespace'
       inputs:
-        kubernetesServiceEndpoint: k8s
+        kubernetesServiceEndpoint: k8s-dev
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/namespace.yaml
@@ -103,7 +103,7 @@ stages:
     - task: Kubernetes@1
       displayName: 'k8s deploy backend'
       inputs:
-        kubernetesServiceEndpoint: k8s
+        kubernetesServiceEndpoint: k8s-dev
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/back.yaml
@@ -160,7 +160,7 @@ stages:
     - task: Kubernetes@1
       displayName: 'k8s deploy frontend'
       inputs:
-        kubernetesServiceEndpoint: k8s
+        kubernetesServiceEndpoint: k8s-dev
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/frontend.yaml
@@ -168,7 +168,7 @@ stages:
     - task: Kubernetes@1
       displayName: 'k8s deploy ingress dev'
       inputs:
-        kubernetesServiceEndpoint: k8s
+        kubernetesServiceEndpoint: k8s-dev
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/ingress-dev.yaml
@@ -219,7 +219,7 @@ stages:
     - task: Kubernetes@1
       displayName: 'k8s deploy namespace'
       inputs:
-        kubernetesServiceEndpoint: k8s
+        kubernetesServiceEndpoint: k8s-pdn
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/namespace.yaml
@@ -275,27 +275,26 @@ stages:
     - task: Kubernetes@1
       displayName: 'k8s deploy backend'
       inputs:
-        kubernetesServiceEndpoint: k8s
+        kubernetesServiceEndpoint: k8s-pdn
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/back.yaml
 
-- stage: rollbackbackendpdn
-  displayName: 'Rollback Backend'
-  dependsOn:
-  - backendbuildpdn
-  condition: and(failed(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
-  jobs:
-  - job: rollbackbackendpdn
-    pool:
-      name: devopslab
-    steps:
-    - task: tsuyoshiushio.k8s-endpoint.general-task.kubectlgeneral@3
-      displayName: 'rollout'
-      inputs:
-        k8sService: 'k8s'
-        subCommand: rollout
-        arguments: 'undo deployment backend -n devops-pdn'
+# - stage: rollbackbackendpdn
+#   displayName: 'Rollback Backend'
+#   dependsOn: backendbuildpdn
+#   condition: failed()
+#   jobs:
+#   - job: rollbackbackendpdn
+#     pool:
+#       name: devopslab
+#     steps:
+#     - task: tsuyoshiushio.k8s-endpoint.general-task.kubectlgeneral@3
+#       displayName: 'rollout'
+#       inputs:
+#         k8sService: 'k8s-pdn'
+#         subCommand: rollout
+#         arguments: 'undo deployment backend -n devops-pdn'
 
 
 - stage: frontendbuildpdn
@@ -344,7 +343,7 @@ stages:
     - task: Kubernetes@1
       displayName: 'k8s deploy frontend'
       inputs:
-        kubernetesServiceEndpoint: k8s
+        kubernetesServiceEndpoint: k8s-pdn
         command: apply
         useConfigurationFile: true
         configuration: devops/k8s/frontend.yaml
@@ -358,19 +357,18 @@ stages:
         useConfigurationFile: true
         configuration: devops/k8s/ingress-pdn.yaml
 
-- stage: rollbackfrontendpdn
-  displayName: 'Rollback Frontend'
-  dependsOn:
-  - frontendbuildpdn
-  condition: and(failed(), eq(variables['build.sourceBranch'], 'refs/heads/main'))
-  jobs:
-  - job: rollbackfrontendpdn
-    pool:
-      name: devopslab
-    steps:
-    - task: tsuyoshiushio.k8s-endpoint.general-task.kubectlgeneral@3
-      displayName: 'rollout'
-      inputs:
-        k8sService: 'k8s'
-        subCommand: rollout
-        arguments: 'undo deployment frontend -n devops-pdn'
+# - stage: rollbackfrontendpdn
+#   displayName: 'Rollback Frontend'
+#   dependsOn: frontendbuildpdn
+#   condition: failed()
+#   jobs:
+#   - job: rollbackfrontendpdn
+#     pool:
+#       name: devopslab
+#     steps:
+#     - task: tsuyoshiushio.k8s-endpoint.general-task.kubectlgeneral@3
+#       displayName: 'rollout'
+#       inputs:
+#         k8sService: 'k8s-pdn'
+#         subCommand: rollout
+#         arguments: 'undo deployment frontend -n devops-pdn'
